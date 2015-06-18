@@ -15,7 +15,7 @@ public class TrainingOrmLiteHelper extends OrmLiteSqliteOpenHelper {
     public static final String TAG = TrainingOrmLiteHelper.class.getSimpleName();
 
     public static final String DATABASE_NAME = "marek.sqlite";
-    public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 10;
 
     private Dao<DataModel, Integer> modelDao = null;
 
@@ -26,7 +26,7 @@ public class TrainingOrmLiteHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
-            TableUtils.clearTable(connectionSource, DataModel.class);
+            TableUtils.createTableIfNotExists(connectionSource, DataModel.class);
             Log.d(TAG, "Created");
         } catch (SQLException e) {
             e.printStackTrace();

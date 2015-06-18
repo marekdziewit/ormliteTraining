@@ -14,12 +14,4 @@ public class DataModel {
 
     @DatabaseField
     String description;
-
-    public DataModel() {
-    }
-
-    public DataModel(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
 }

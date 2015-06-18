@@ -25,6 +25,11 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+        try {
+            populateTextViewFromSQLiteDB(new TrainingOrmLiteHelper(this));
+        } catch (SQLException q) {
+            Log.d(TAG, q.getMessage());
+        }
 
     }
 
@@ -36,18 +41,32 @@ public class MainActivity extends ActionBarActivity {
             item.description = "ELOOOO";
             item.title = "kurwa";
             helper.getModelDao().create(item);
-
-            List<DataModel> models = helper.getModelDao().queryForAll();
-            String result = "";
-            for (DataModel model : models) {
-                result = result + model.title + "  " + model.description + "\n";
-            }
-
-            textViews.setText(result);
+            populateTextViewFromSQLiteDB(helper);
         } catch (SQLException e) {
             Log.d(TAG, e.getMessage());
             Toast.makeText(
                     this, getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void populateTextViewFromSQLiteDB(TrainingOrmLiteHelper helper) throws SQLException {
+        List<DataModel> models = helper.getModelDao().queryForAll();
+        String result = "";
+        for (DataModel model : models) {
+            result = result + model.title + "  " + model.description + "\n";
+        }
+
+        textViews.setText(result);
+    }
+
+    @OnClick(R.id.delete_all)
+    void deleteClicked() {
+        TrainingOrmLiteHelper helper = new TrainingOrmLiteHelper(this);
+        try {
+            helper.getModelDao().delete(helper.getModelDao().queryForAll());
+            textViews.setText("");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
